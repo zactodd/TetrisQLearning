@@ -8,3 +8,6 @@ tensorflow
 opencv-python
 Pillow
 pywin32
+selenium
+webdriver_manager
+tqdm
