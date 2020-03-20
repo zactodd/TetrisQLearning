@@ -6,6 +6,7 @@ import win32gui
 BOARD_COLOUR = np.array([35, 35, 36])
 BOARD_HEIGHT, BOARD_WIDTH = 20, 10
 EMPTY_BOARD = np.zeros((BOARD_HEIGHT, BOARD_WIDTH))
+
 TETROMINOES_COLOURS = {
     "i": [116, 98, 0],
     "o": [0, 102, 116],
@@ -28,22 +29,36 @@ def board_matrix(image):
     board_mask = cv2.inRange(image, BOARD_COLOUR, BOARD_COLOUR)
     contours, _ = cv2.findContours(board_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     cnt = max(contours, key=cv2.contourArea)
-    board_x, board_y, board_w, board_h = cv2.boundingRect(cnt)
+    board_rect = cv2.boundingRect(cnt)
 
-    for colour in TETROMINOES_COLOURS.values():
-        bgr_color = np.array(colour)
-        mask = cv2.inRange(image, bgr_color, bgr_color)
-        contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        for cnt in contours:
-            x, y, w, h = cv2.boundingRect(cnt)
-            block_width, block_height = board_w // BOARD_WIDTH, board_h // BOARD_HEIGHT
-            for board_row in range(BOARD_HEIGHT):
-                for board_col in range(BOARD_WIDTH):
-                    block_x = block_width * board_col
-                    block_y = block_height * board_row
-                    if board_x + block_x <= x < board_x + block_x + block_width and \
-                            board_y + block_y <= y < board_y + block_y + block_height:
-                        board[board_row, board_col] = 1
+    for t in TETROMINOES_COLOURS:
+        board = find_tetromino(t, image, board_rect, board)
+    return board
+
+
+def find_tetromino(tetromino, image, board_rect, board=EMPTY_BOARD.copy()):
+    """
+    Obtaines the a matrix containing the postions of all the tetromino :param tetromino
+    :param tetromino: the tetrom to find.
+    :param image:
+    :param board_rect: the x, y, w, h: x and y being the the top left corner coords and
+        w, h being the width and height of the rectangle.
+    :param board:A board to update if an existing board exist other wise creates an empty board.
+    :return:
+    """
+    board_x, board_y, board_w, board_h = board_rect
+    colour = np.array(TETROMINOES_COLOURS[tetromino])
+    mask = cv2.inRange(image, colour, colour)
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    for cnt in contours:
+        x, y, *_ = cv2.boundingRect(cnt)
+        block_width, block_height = board_w // BOARD_WIDTH, board_h // BOARD_HEIGHT
+        position_x, position_y = block_width + board_x, block_height + board_y
+        for board_row in range(BOARD_HEIGHT):
+            for board_col in range(BOARD_WIDTH):
+                block_x, block_y = block_width * board_col, block_height * board_row
+                if board_x + block_x <= x < block_x + position_x and board_y + block_y <= y < block_y + position_y:
+                    board[board_row, board_col] = 1
     return board
 
 
@@ -66,5 +81,3 @@ def game_image():
             screenshot = ImageGrab.grab(position)
             return cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
     raise Exception("Game Not Found")
-
-
