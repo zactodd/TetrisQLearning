@@ -1,5 +1,4 @@
-from utils import get_chrome_driver
-from selenium.common.exceptions import NoSuchElementException
+from tetris_ql.utils import get_chrome_driver
 
 DRIVER = get_chrome_driver()
 URL = "https://tetris.com/play-tetris"
@@ -18,4 +17,3 @@ class Page:
         """
         browser.get(URL)
         return browser
-

@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 from PIL import ImageGrab
 import win32gui
-import exceptions
+from tetris_ql import exceptions
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
