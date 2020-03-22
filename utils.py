@@ -1,12 +1,15 @@
+import sys
+import os
+import time
 import cv2
 import numpy as np
 from PIL import ImageGrab
 import win32gui
-import time
 import exceptions
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 
-TETRIS_URL = "https://tetris.com/play-tetris"
 BOARD_COLOUR = np.array([35, 35, 36])
 BOARD_HEIGHT, BOARD_WIDTH = 20, 10
 EMPTY_BOARD = np.zeros((BOARD_HEIGHT, BOARD_WIDTH))
@@ -97,7 +100,20 @@ def game_images(wait=0.25):
         time.sleep(wait)
 
 
-
-
+def get_chrome_driver():
+    """
+    Installs the chrome driver if already installed gets the drivers path.
+    :return: The driver.
+    """
+    sys.stdout = open(os.devnull, 'w')
+    try:
+        path = ChromeDriverManager().install()
+    except PermissionError as e:
+        if e.errno != 13:
+            raise e
+        path = e.filename
+    finally:
+        sys.stdout = sys.__stdout__
+    return webdriver.Chrome(path)
 
 
