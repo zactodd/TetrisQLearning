@@ -3,8 +3,10 @@ import numpy as np
 from PIL import ImageGrab
 import win32gui
 import time
+import exceptions
 
 
+TETRIS_URL = "https://tetris.com/play-tetris"
 BOARD_COLOUR = np.array([35, 35, 36])
 BOARD_HEIGHT, BOARD_WIDTH = 20, 10
 EMPTY_BOARD = np.zeros((BOARD_HEIGHT, BOARD_WIDTH))
@@ -82,7 +84,7 @@ def game_image():
             position = win32gui.GetWindowRect(hwnd)
             screenshot = ImageGrab.grab(position)
             return cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
-    raise Exception("Game Not Found")
+    raise exceptions.GameNotFoundException()
 
 
 def game_images(wait=0.25):
@@ -93,4 +95,9 @@ def game_images(wait=0.25):
     while True:
         yield game_image()
         time.sleep(wait)
+
+
+
+
+
 
