@@ -6,8 +6,7 @@ tf.disable_eager_execution()
 
 
 class DeepQNetwork(object):
-    def __init__(self, lr, n_actions, name, input_dims,
-                 fc1_dims=256, fc2_dims=256, chkpt_dir='tmp/dqn'):
+    def __init__(self, lr, n_actions, name, input_dims, fc1_dims=256, fc2_dims=256, chkpt_dir='tmp/dqn'):
         self.lr = lr
         self.n_actions = n_actions
         self.name = name
