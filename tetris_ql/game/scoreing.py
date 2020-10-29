@@ -14,5 +14,30 @@ SCORE_DICT = {
 }
 
 
-def score(action, lvl, combo_num=0, is_b2b=False):
+B2B_DICT = {
+    "SINGLE": False,
+    "DOUBLE": False,
+    "TRIPLE": False,
+    "TETRIS": True,
+
+    "TSPIN_MINI_NO_LINES": True,
+    "TSPIN_NO_LINES": True,
+    "TSPIN_MINI_SINGLE": True,
+    "TSPIN_SINGLE": True,
+    "TSPIN_MINI_DOUBLE": True,
+    "TSPIN_DOUBLE": True,
+    "TSPIN_TRIPLE": True
+}
+
+
+def score(action: str, lvl: int, combo_num: int = 0, is_b2b: bool = False) -> float:
+    """
+    Calculates the score of a given action.
+    :param action: The action occurring
+    :param lvl: The current level.
+    :param combo_num: The current combo amount.
+    :param is_b2b: IF this is a back to back event.
+    :return: THe resulting score
+    """
     return (SCORE_DICT[action] * (1.5 if is_b2b else 1) + 50 * combo_num) * lvl
+

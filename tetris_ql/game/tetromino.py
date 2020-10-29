@@ -176,7 +176,7 @@ class I(Tetromino):
         return "I"
 
 
-def random_bag():
+def random_bag() -> np.ndarray:
     bag = np.asarray((L, J, S, Z, O, T, I))
     np.random.shuffle(bag)
     return bag
