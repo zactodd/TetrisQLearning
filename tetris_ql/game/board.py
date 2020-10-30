@@ -13,6 +13,7 @@ class Board:
         self._num_visible_tetrominos = 3
 
         self._matrix = np.zeros((self._width, self._height + self._height_padding))
+        self._I = np.identity(self._height)
 
         self.lines = 0
         self.score = 0
@@ -48,11 +49,17 @@ class Board:
         pass
 
     def update_board(self) -> None:
-        pass
+        lines_cleared = np.where((self._matrix == 1).all(axis=1))[0]
+        num_lines_clears = len(lines_cleared)
+        if num_lines_clears > 0:
+            shifts = (self._I[p + 1: c, ] for p, c in zip((-1, *lines_cleared), (*lines_cleared, -1)))
+            t = np.concatenate((np.zeros((num_lines_clears, self._height)), *shifts), axis=0)
+            self._matrix = np.dor(t, self._matrix)
+            self._combo += 1
+        else:
+            self._combo = 0
 
-    def _determine_action(self):
-        lines_cleared = len(np.where((self._matrix == 1).all(axis=1))[0])
-
+    def _update_score(self, lines_cleared):
         if lines_cleared == 0:
             if self.tetromino.name != "T":
                 return None
@@ -75,3 +82,4 @@ class Board:
                 ...
         elif lines_cleared == 4:
             return "TETRIS"
+
