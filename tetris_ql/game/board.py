@@ -51,7 +51,8 @@ class Board:
         pass
 
     def _determine_action(self):
-        lines_cleared = ...
+        lines_cleared = len(np.where((self._matrix == 1).all(axis=1))[0])
+
         if lines_cleared == 0:
             if self.tetromino.name != "T":
                 return None
@@ -74,4 +75,3 @@ class Board:
                 ...
         elif lines_cleared == 4:
             return "TETRIS"
-
