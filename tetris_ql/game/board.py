@@ -53,11 +53,9 @@ class Board:
         lines_cleared = np.where((self._matrix == 1).all(axis=1))[0]
         num_lines_clears = len(lines_cleared)
         if num_lines_clears > 0:
-            shifts = (self._I[p + 1: c, ] for p, c in zip((-1, *lines_cleared), (*lines_cleared, -1)))
-            t = np.concatenate((np.zeros((num_lines_clears, self._height)), *shifts), axis=0)
-
             self._previous_matrix = self._matrix.copy()
-            self._matrix = np.dor(t, self._matrix)
+            np.delete(self._matrix, *lines_cleared, axis=0)
+            self._matrix = np.append(np.zeros((num_lines_clears, self._height)), self._matrix, axis=0)
             self._combo += 1
         else:
             self._combo = 0
